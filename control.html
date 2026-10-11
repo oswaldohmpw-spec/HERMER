@@ -277,6 +277,7 @@ label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase
   <div class="hactions">
     <a href="chofer.html" class="btn bg" title="Ir a Control Choferes" style="text-decoration:none; display:inline-flex; align-items:center;">🚛 Choferes</a>
     <a href="index.html" class="btn bg" title="Volver al Menú Principal" style="text-decoration:none; display:inline-flex; align-items:center;">🏠 Menú</a>
+    <button class="btn bg" onclick="openControlBackupModal()" title="Respaldar o Restaurar Facturas y Cartas Porte">💾 Respaldo</button>
     <button class="btn" style="background:var(--red);color:white;border:none" onclick="showToast('⚠️ Haz doble clic rápido para borrar todo','te')" ondblclick="localStorage.clear();location.reload();">🗑️ Borrar Todo</button>
     <button class="btn" style="background:#4b5563;color:white;border:none" onclick="document.getElementById('csv-file').click()">🔄 Convertir CSV de FEL</button>
     <input type="file" id="csv-file" accept=".csv" style="display:none" onchange="convertCSV(event)">
@@ -532,6 +533,33 @@ label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase
     <div class="mf" id="xfooter" style="display:none">
       <button class="btn bg" onclick="closeXML()">Cancelar</button>
       <button class="btn bx" onclick="importAll()">✅ Importar Todo</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RESPALDO & RESTAURACION -->
+<div class="ov" id="ov-backup" onclick="if(event.target===this)closeControlBackupModal()">
+  <div class="md" style="max-width:520px">
+    <div class="mh">
+      <h2>💾 Respaldar / Restaurar Base de Datos</h2>
+      <button class="xb" onclick="closeControlBackupModal()">✕</button>
+    </div>
+    <div class="mb" style="padding:24px; display:flex; flex-direction:column; gap:20px;">
+      <div style="background:rgba(79,110,247,0.1); border:1px solid rgba(79,110,247,0.25); border-radius:12px; padding:16px;">
+        <h3 style="font-size:15px; margin-bottom:6px; color:#93c5fd;">1. Exportar datos (Descargar)</h3>
+        <p style="font-size:12.5px; color:var(--muted); margin-bottom:12px;">Descarga un archivo JSON con todas tus Cartas Porte, Facturas y Pagos para transferirlos a tu celular u otra máquina.</p>
+        <button class="btn bp" style="width:100%; justify-content:center;" onclick="downloadControlBackup()">⬇ Descargar Respaldo JSON</button>
+      </div>
+
+      <div style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.25); border-radius:12px; padding:16px;">
+        <h3 style="font-size:15px; margin-bottom:6px; color:#6ee7b7;">2. Importar datos (Restaurar)</h3>
+        <p style="font-size:12.5px; color:var(--muted); margin-bottom:12px;">Selecciona el archivo de respaldo descargado para cargarlo en este dispositivo.</p>
+        <input type="file" id="control-backup-file" accept=".json" class="inp" style="width:100%; margin-bottom:10px;">
+        <button class="btn bx" style="width:100%; justify-content:center;" onclick="restoreControlBackup()">📤 Restaurar Respaldo</button>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn bg" onclick="closeControlBackupModal()">Cerrar</button>
     </div>
   </div>
 </div>
@@ -1816,6 +1844,55 @@ function printSelected() {
   document.getElementById('pz-date').textContent = 'Generado el: ' + d.toLocaleDateString('es-MX') + ' a las ' + d.toLocaleTimeString('es-MX');
   
   window.print();
+}
+
+/* ===== GESTIÓN DE RESPALDOS ===== */
+function openControlBackupModal(){ document.getElementById('ov-backup').classList.add('open'); }
+function closeControlBackupModal(){ document.getElementById('ov-backup').classList.remove('open'); }
+
+function downloadControlBackup(){
+  const backup = {
+    records: records,
+    facturas: facturas,
+    pagos: pagos,
+    exportDate: new Date().toISOString()
+  };
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+  const a = document.createElement('a');
+  a.href = dataStr;
+  a.download = `Hermer_Control_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  showToast('Respaldo descargado exitosamente', 'ts');
+}
+
+function restoreControlBackup(){
+  const fi = document.getElementById('control-backup-file');
+  if(!fi.files || !fi.files.length){ showToast('⚠️ Selecciona un archivo JSON primero', 'te'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      const data = JSON.parse(e.target.result);
+      let countCP = 0, countFA = 0, countPG = 0;
+      if(Array.isArray(data)) {
+        records = data;
+        localStorage.setItem(SK, JSON.stringify(records));
+        countCP = records.length;
+      } else {
+        if(data.records) { records = data.records; localStorage.setItem(SK, JSON.stringify(records)); countCP = records.length; }
+        if(data.facturas) { facturas = data.facturas; localStorage.setItem(FK, JSON.stringify(facturas)); countFA = facturas.length; }
+        if(data.pagos) { pagos = data.pagos; localStorage.setItem(PK, JSON.stringify(pagos)); countPG = pagos.length; }
+      }
+      closeControlBackupModal();
+      load(); renderTable(); updateStats(); updatePagosStats(); updateTabCounts();
+      showToast(`✅ Restaurado: ${countCP} Cartas Porte, ${countFA} Facturas, ${countPG} Pagos`, 'ts');
+    } catch(err){
+      console.error(err);
+      showToast('Error al leer el archivo JSON', 'te');
+    }
+  };
+  reader.readAsText(fi.files[0]);
 }
 
 load();renderTable();updateStats();updatePagosStats();updateTabCounts();
