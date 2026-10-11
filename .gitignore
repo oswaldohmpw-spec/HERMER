@@ -1,0 +1,7 @@
+# Temporary & backup files
+*_copy.xlsx
+2.HTML
+.env
+__pycache__/
+*.pyc
+.vscode/

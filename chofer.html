@@ -1,0 +1,3478 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRANSPORTES HERMER · Control de Viajes y Choferes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #0b0e17;
+      --bg-alt: #0f1322;
+      --surface: #13172b;
+      --card: #181d36;
+      --card-hover: #1f2545;
+      --border: #262e54;
+      --border-focus: #4f6ef7;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      
+      --accent: #4f6ef7;
+      --accent-hover: #3e5be0;
+      --accent-glow: rgba(79, 110, 247, 0.35);
+      --accent2: #7c3aed;
+      
+      --green: #10b981;
+      --green-dark: #059669;
+      --green-glow: rgba(16, 185, 129, 0.25);
+      
+      --yellow: #f59e0b;
+      --yellow-dark: #d97706;
+      --yellow-glow: rgba(245, 158, 11, 0.25);
+      
+      --red: #ef4444;
+      --red-dark: #dc2626;
+      --red-glow: rgba(239, 68, 68, 0.25);
+      
+      --cyan: #06b6d4;
+      --purple: #a855f7;
+      
+      --text: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --muted: #64748b;
+      
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 15% 15%, #141a33 0%, #0b0e17 60%, #07090f 100%);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Scrollbars modernos */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #252d4d;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3b4674;
+    }
+
+    /* HEADER */
+    header {
+      background: rgba(14, 18, 36, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 6px 18px var(--accent-glow);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      flex-shrink: 0;
+    }
+
+    .logo-text h1 {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-text h1 .badge-version {
+      font-size: 10px;
+      background: rgba(79, 110, 247, 0.2);
+      border: 1px solid rgba(79, 110, 247, 0.4);
+      color: #93c5fd;
+      padding: 2px 7px;
+      border-radius: 20px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .logo-text span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .hactions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* BOTONES */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: inherit;
+      user-select: none;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-icon {
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    .bp {
+      background: linear-gradient(135deg, var(--accent) 0%, #6366f1 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+    .bp:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(79, 110, 247, 0.5);
+      filter: brightness(1.08);
+    }
+
+    .bx {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px var(--green-glow);
+    }
+    .bx:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(16, 185, 129, 0.45);
+      filter: brightness(1.08);
+    }
+
+    .by {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px var(--yellow-glow);
+    }
+    .by:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(245, 158, 11, 0.45);
+      filter: brightness(1.08);
+    }
+
+    .bg {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .bg:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .bd {
+      background: rgba(239, 68, 68, 0.12);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .bd:hover {
+      background: rgba(239, 68, 68, 0.22);
+      color: #fca5a5;
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+
+    .bs {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    /* DROPDOWNS */
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 250;
+      box-shadow: var(--shadow-lg);
+      min-width: 220px;
+      animation: menuFadeIn 0.2s ease-out;
+    }
+
+    .dropdown-menu.show {
+      display: flex;
+    }
+
+    @keyframes menuFadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--text);
+      background: none;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+
+    .dropdown-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .dropdown-item.danger {
+      color: var(--red);
+    }
+    .dropdown-item.danger:hover {
+      background: rgba(239, 68, 68, 0.12);
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0;
+    }
+
+    /* MAIN CONTAINER */
+    .main {
+      max-width: 1780px;
+      margin: 0 auto;
+      padding: 24px 32px 60px;
+    }
+
+    /* DASHBOARD CARDS */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .dash-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .dash-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .dash-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+
+    .card-accent-blue::before { background: linear-gradient(90deg, var(--accent), #60a5fa); }
+    .card-accent-green::before { background: linear-gradient(90deg, #10b981, #34d399); }
+    .card-accent-yellow::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .card-accent-purple::before { background: linear-gradient(90deg, #8b5cf6, #c084fc); }
+    .card-accent-red::before { background: linear-gradient(90deg, #ef4444, #f87171); }
+    .card-accent-cyan::before { background: linear-gradient(90deg, #06b6d4, #38bdf8); }
+
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .dash-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .dash-badge-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .dash-val {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .dash-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .dash-progress {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .dash-progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+
+    /* TOOLBAR & CONTROLES */
+    .toolbar-container {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .toolbar-row-main {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-search {
+      flex: 1;
+      min-width: 280px;
+      max-width: 480px;
+      position: relative;
+    }
+
+    .toolbar-search input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 14px 9px 38px;
+      color: var(--text);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .toolbar-search input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.15);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+      font-size: 14px;
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      display: none;
+    }
+
+    .search-clear:hover {
+      color: var(--text);
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-left: auto;
+    }
+
+    .toolbar-row-filters {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .filter-select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 7px 12px;
+      color: var(--text);
+      font-size: 12.5px;
+      font-family: inherit;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .filter-select:focus {
+      border-color: var(--accent);
+    }
+
+    /* SEGMENTED CONTROLS */
+    .segmented-control {
+      display: inline-flex;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .segment-btn {
+      background: none;
+      border: none;
+      padding: 5px 11px;
+      border-radius: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+
+    .segment-btn:hover {
+      color: var(--text);
+    }
+
+    .segment-btn.active {
+      background: var(--card);
+      color: var(--text);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-reset-filters {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: auto;
+      font-family: inherit;
+    }
+
+    .btn-reset-filters:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* TABLAS MENSUALES & ACORDEÓN */
+    #table-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .month-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .month-card:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .month-header-bar {
+      padding: 16px 24px;
+      background: linear-gradient(90deg, rgba(79, 110, 247, 0.15) 0%, rgba(30, 37, 70, 0.5) 100%);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    .month-header-bar:hover {
+      background: linear-gradient(90deg, rgba(79, 110, 247, 0.22) 0%, rgba(38, 47, 90, 0.6) 100%);
+    }
+
+    .month-title-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .month-chevron {
+      font-size: 14px;
+      color: var(--muted);
+      transition: transform 0.25s ease;
+      display: inline-block;
+    }
+
+    .month-card.collapsed .month-chevron {
+      transform: rotate(-90deg);
+    }
+
+    .month-card.collapsed .month-body {
+      display: none;
+    }
+
+    .month-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-counter {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      padding: 2px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .month-metrics {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .metric-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(11, 14, 23, 0.6);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+    }
+
+    .metric-pill .lbl {
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-pill .val {
+      font-weight: 800;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric-pill.profit .val {
+      color: var(--green);
+    }
+
+    .month-body {
+      overflow-x: auto;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    /* TABLE STYLES */
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 12.5px;
+      min-width: 1720px;
+    }
+
+    thead th {
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-secondary);
+      background: #141930;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    thead th.r {
+      text-align: right;
+    }
+
+    tbody tr {
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: rgba(79, 110, 247, 0.05);
+    }
+
+    tbody tr.row-paid-chofer {
+      background: rgba(16, 185, 129, 0.035);
+    }
+
+    tbody tr.row-paid-chofer:hover {
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    td {
+      padding: 11px 14px;
+      border-bottom: 1px solid rgba(38, 46, 84, 0.6);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    td.r {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+    }
+
+    /* COLUMNS SIZING */
+    .col-id { min-width: 55px; width: 55px; }
+    .col-folio { min-width: 110px; width: 110px; }
+    .col-fecha { min-width: 105px; width: 105px; }
+    .col-origen { min-width: 150px; }
+    .col-destino { min-width: 150px; }
+    .col-total { min-width: 130px; }
+    .col-comision { min-width: 115px; }
+    .col-impuestos { min-width: 120px; }
+    .col-neto { min-width: 125px; }
+    .col-pago { min-width: 135px; background: rgba(16, 185, 129, 0.04); }
+    .col-utilidad { min-width: 135px; }
+    .col-gastos { min-width: 105px; text-align: center; }
+    .col-casetas { min-width: 120px; text-align: center; }
+    .col-diesel { min-width: 120px; text-align: center; }
+    .col-estchofer { min-width: 125px; text-align: center; }
+    .col-estviaje { min-width: 125px; text-align: center; }
+    .col-acciones { min-width: 90px; text-align: center; }
+
+    /* BADGES & PILLS */
+    .badge-folio {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(79, 110, 247, 0.14);
+      color: #93c5fd;
+      border: 1px solid rgba(79, 110, 247, 0.35);
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .badge-folio:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .status-paid {
+      background: rgba(16, 185, 129, 0.14);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.35);
+    }
+    .status-paid:hover {
+      background: rgba(16, 185, 129, 0.25);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .status-pending {
+      background: rgba(245, 158, 11, 0.12);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    .status-pending:hover {
+      background: rgba(245, 158, 11, 0.22);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-verify {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+    }
+
+    .verify-yes {
+      background: rgba(79, 110, 247, 0.15);
+      color: #93c5fd;
+      border-color: rgba(79, 110, 247, 0.3);
+    }
+    .verify-yes:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .verify-no {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      border-color: var(--border);
+    }
+    .verify-no:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+    }
+
+    /* INLINE INPUTS */
+    .inp-tbl {
+      width: 78px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: rgba(11, 14, 23, 0.7);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 600;
+      outline: none;
+      text-align: right;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .inp-tbl:focus {
+      border-color: var(--accent);
+      background: var(--bg);
+      box-shadow: 0 0 0 2px rgba(79, 110, 247, 0.25);
+    }
+
+    .inp-tbl::placeholder {
+      color: rgba(148, 163, 184, 0.3);
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    /* TFOOT TOTALS */
+    tfoot tr {
+      background: #141930;
+      border-top: 2px solid var(--accent);
+      position: sticky;
+      bottom: 0;
+      z-index: 30;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    tfoot td {
+      padding: 13px 14px;
+      font-weight: 800;
+      color: var(--text);
+      border-bottom: none;
+    }
+
+    /* MODALES */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 7, 14, 0.78);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 640px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(20px) scale(0.98);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-overlay.open .modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-xl {
+      max-width: 1080px;
+    }
+
+    .modal-header {
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .modal-header h2 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-close {
+      width: 34px;
+      height: 34px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--red);
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .modal-body {
+      padding: 24px 28px;
+    }
+
+    .modal-footer {
+      padding: 16px 28px 22px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      border-top: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    /* FORMS */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .inp {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      color: var(--text);
+      font-size: 13.5px;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    .inp:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.18);
+    }
+
+    .inp::placeholder {
+      color: rgba(148, 163, 184, 0.35);
+    }
+
+    /* PREVIEW CALCULATION BOX IN MODAL */
+    .calc-preview-card {
+      background: rgba(11, 14, 23, 0.8);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-top: 8px;
+      grid-column: 1 / -1;
+    }
+
+    .calc-preview-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .calc-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .calc-preview-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .calc-preview-item .l {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .calc-preview-item .v {
+      font-size: 14px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* DRAG & DROP OVERLAY */
+    #drop-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 14, 23, 0.92);
+      border: 3px dashed var(--accent);
+      z-index: 999;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    #drop-overlay.drag-active {
+      display: flex;
+    }
+
+    .drop-icon {
+      font-size: 64px;
+      animation: floatUpDown 1.5s ease-in-out infinite;
+    }
+
+    @keyframes floatUpDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* TOAST */
+    .toast-container {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    .toast {
+      pointer-events: auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13.5px;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      max-width: 420px;
+      transform: translateX(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toast.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .toast-ts { border-left: 4px solid var(--green); }
+    .toast-te { border-left: 4px solid var(--red); }
+    .toast-ti { border-left: 4px solid var(--accent); }
+    .toast-tw { border-left: 4px solid var(--yellow); }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 80px 24px;
+      background: var(--card);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-lg);
+      margin: 20px 0;
+    }
+
+    .empty-icon {
+      font-size: 56px;
+      margin-bottom: 16px;
+      opacity: 0.6;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .empty-state p {
+      color: var(--text-secondary);
+      font-size: 13.5px;
+      max-width: 460px;
+      margin: 0 auto 24px;
+    }
+
+    /* TOTALES GLOBALES (TODOS LOS MESES) */
+    .global-summary-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      border-top: 3px solid var(--accent);
+    }
+
+    .global-summary-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .global-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .g-item {
+      background: rgba(11, 14, 23, 0.5);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .g-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .g-val {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* BARRA FLOTANTE DE SELECCION */
+    .selection-floating-bar {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #141933;
+      border: 1px solid var(--accent);
+      border-radius: 30px;
+      padding: 10px 22px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--accent-glow);
+      z-index: 280;
+      animation: floatBarIn 0.25s ease-out;
+    }
+
+    @keyframes floatBarIn {
+      from { transform: translate(-50%, 40px); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
+    }
+
+    /* COLUMNA SELECCION */
+    .col-select {
+      min-width: 42px;
+      max-width: 42px;
+      width: 42px;
+      text-align: center;
+    }
+
+    .row-checkbox, .chk-month-all {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: var(--accent);
+      vertical-align: middle;
+    }
+
+    /* ESTILOS DE IMPRESIÓN PARA EL INFORME */
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #printable-report-area, #printable-report-area * {
+        visibility: visible !important;
+      }
+      #printable-report-area {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        padding: 20px !important;
+        background: white !important;
+        color: black !important;
+        font-family: sans-serif !important;
+        display: block !important;
+      }
+      #printable-report-area table {
+        width: 100% !important;
+        min-width: 100% !important;
+        border-collapse: collapse !important;
+        color: black !important;
+      }
+      #printable-report-area th, #printable-report-area td {
+        border: 1px solid #aaa !important;
+        padding: 8px 10px !important;
+        color: black !important;
+        font-size: 11px !important;
+        background: transparent !important;
+      }
+      #printable-report-area thead tr {
+        background: #f1f5f9 !important;
+      }
+      #printable-report-area h1, #printable-report-area h2, #printable-report-area p, #printable-report-area strong {
+        color: black !important;
+      }
+      .modal-overlay {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        position: static !important;
+        display: block !important;
+      }
+      .modal-card {
+        box-shadow: none !important;
+        border: none !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        background: white !important;
+      }
+      .modal-header, .modal-footer {
+        display: none !important;
+      }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      header {
+        padding: 0 20px;
+      }
+      .main {
+        padding: 20px 20px 40px;
+      }
+      .toolbar-row-main {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .toolbar-search {
+        max-width: none;
+      }
+      .toolbar-actions {
+        margin-left: 0;
+        justify-content: flex-start;
+      }
+      .toolbar-row-filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .btn-reset-filters {
+        margin-left: 0;
+        justify-content: center;
+      }
+    }
+  </style>
+
+  <!-- LIBRERÍAS EXTERNAS -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+</head>
+
+<body>
+
+  <!-- PANTALLA ARRASTRAR Y SOLTAR (DRAG & DROP GLOBAL) -->
+  <div id="drop-overlay">
+    <div class="drop-icon">📑</div>
+    <h2 style="font-size:24px; font-weight:800;">Suelta tus Facturas o Cartas Porte aquí</h2>
+    <p style="color:var(--text-secondary); font-size:14px;">Puedes soltar uno o varios archivos PDF para procesarlos de inmediato</p>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🚚</div>
+      <div class="logo-text">
+        <h1>TRANSPORTES HERMER <span class="badge-version">Pro 2.0</span></h1>
+        <span>Control Logístico · Choferes · Comisiones y Utilidades</span>
+      </div>
+    </div>
+
+    <div class="hactions">
+      <a href="control.html" class="btn bg" title="Ir a Control Facturas FEL" style="text-decoration:none; display:inline-flex; align-items:center;">
+        <span class="btn-icon">📋</span> Facturas
+      </a>
+      <a href="index.html" class="btn bg" title="Volver al Menú Principal" style="text-decoration:none; display:inline-flex; align-items:center;">
+        <span class="btn-icon">🏠</span> Menú
+      </a>
+      <button class="btn bx" onclick="document.getElementById('fileInput').click()" title="Subir uno o múltiples PDFs">
+        <span class="btn-icon">📄</span> Subir PDF(s)
+      </button>
+      <input type="file" id="fileInput" accept=".pdf" multiple style="display:none" onchange="handlePDFSelection(this.files)">
+
+      <button class="btn bp" onclick="openCreateModal()">
+        <span class="btn-icon">➕</span> Registrar Viaje
+      </button>
+
+      <button class="btn bg" onclick="exportExcel()" title="Descargar reporte en formato Excel estilizado">
+        <span class="btn-icon">⬇</span> Excel
+      </button>
+
+      <!-- Dropdown de Configuración / Respaldo -->
+      <div class="dropdown">
+        <button class="btn bg" onclick="toggleDropdown('settings-menu')">
+          <span class="btn-icon">⚙️</span> Opciones ▼
+        </button>
+        <div id="settings-menu" class="dropdown-menu">
+          <button class="dropdown-item" onclick="openBackupModal()">
+            <span>💾</span> Respaldar / Restaurar BD
+          </button>
+          <button class="dropdown-item" onclick="loadSampleData()">
+            <span>✨</span> Cargar Datos de Demostración
+          </button>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item danger" onclick="openClearConfirmModal()">
+            <span>🗑️</span> Borrar Toda la Base de Datos
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="main">
+
+    <!-- KPI DASHBOARD CARDS -->
+    <div class="dashboard-grid" id="kpi-dashboard">
+      <!-- 1. Total Facturado -->
+      <div class="dash-card card-accent-blue">
+        <div class="dash-header">
+          <span class="dash-title">Total Facturado</span>
+          <span class="dash-badge-icon">💳</span>
+        </div>
+        <div class="dash-val" id="kpi-total">$0.00</div>
+        <div class="dash-sub">
+          <span id="kpi-count">0 viajes registrados</span>
+          <span id="kpi-avg" style="color:var(--muted)">Prom: $0.00</span>
+        </div>
+      </div>
+
+      <!-- 2. Total Cobrado / Pagado a Nosotros (Neto sin descontar nada) -->
+      <div class="dash-card card-accent-cyan">
+        <div class="dash-header">
+          <span class="dash-title">Total Cobrado (Pagado a Nosotros)</span>
+          <span class="dash-badge-icon">💵</span>
+        </div>
+        <div class="dash-val" id="kpi-cobrado" style="color:#38bdf8;">$0.00</div>
+        <div class="dash-sub">
+          <span id="kpi-cobrado-pagado" style="color:#38bdf8;">✓ Cobrado: $0 (0 v.)</span>
+          <span id="kpi-cobrado-pend" style="color:var(--yellow);">⏳ Pend: $0 (0 v.)</span>
+        </div>
+        <div class="dash-progress">
+          <div id="kpi-cobrado-bar" class="dash-progress-fill" style="background:#06b6d4; width:0%;"></div>
+        </div>
+      </div>
+
+      <!-- 2. Ganancia Neta Libre -->
+      <div class="dash-card card-accent-green">
+        <div class="dash-header">
+          <span class="dash-title">Ganancia Neta Empresa</span>
+          <span class="dash-badge-icon">📈</span>
+        </div>
+        <div class="dash-val" id="kpi-ganancia" style="color:var(--green)">$0.00</div>
+        <div class="dash-sub">
+          <span id="kpi-margen">Margen real: 0%</span>
+          <span style="color:var(--muted)">Utilidad - Gastos</span>
+        </div>
+      </div>
+
+      <!-- 3. Pago a Choferes (17%) -->
+      <div class="dash-card card-accent-yellow">
+        <div class="dash-header">
+          <span class="dash-title">Pago Choferes (17%)</span>
+          <span class="dash-badge-icon">👨‍✈️</span>
+        </div>
+        <div class="dash-val" id="kpi-pago" style="color:#fbbf24">$0.00</div>
+        <div class="dash-sub">
+          <span id="kpi-pago-pagado" style="color:var(--green)">✓ Pagado: $0</span>
+          <span id="kpi-pago-pend" style="color:var(--yellow)">⏳ Pend: $0</span>
+        </div>
+        <div class="dash-progress">
+          <div id="kpi-pago-bar" class="dash-progress-fill" style="background:var(--green); width:0%;"></div>
+        </div>
+      </div>
+
+      <!-- 4. Gastos Operativos -->
+      <div class="dash-card card-accent-red">
+        <div class="dash-header">
+          <span class="dash-title">Gastos Operativos</span>
+          <span class="dash-badge-icon">⛽</span>
+        </div>
+        <div class="dash-val" id="kpi-gastos" style="color:#f87171">$0.00</div>
+        <div class="dash-sub">
+          <span id="kpi-gastos-detail">Casetas + Diesel + Gastos</span>
+          <span id="kpi-verif-count" style="font-size:11px;">0/0 verif.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESUMEN GLOBAL CONSOLIDADO (TOTALES DE TODOS LOS MESES) -->
+    <div class="global-summary-card">
+      <div class="global-summary-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:18px;">📊</span>
+          <span style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:0.8px; color:var(--text);">Totales Globales Acumulados (Todos los Meses)</span>
+        </div>
+        <span class="badge-counter" id="global-trips-badge">0 viajes registrados</span>
+      </div>
+      <div class="global-summary-grid">
+        <div class="g-item">
+          <span class="g-lbl">Comisión Total (8%)</span>
+          <span class="g-val" id="gt-comision" style="color:var(--yellow);">$0.00</span>
+        </div>
+        <div class="g-item">
+          <span class="g-lbl">IVA / Impuestos (16%)</span>
+          <span class="g-val" id="gt-iva" style="color:#f87171;">$0.00</span>
+        </div>
+        <div class="g-item">
+          <span class="g-lbl">Viaje Neto Acumulado</span>
+          <span class="g-val" id="gt-neto" style="color:#93c5fd;">$0.00</span>
+        </div>
+        <div class="g-item">
+          <span class="g-lbl">Utilidad Empresa</span>
+          <span class="g-val" id="gt-utilidad">$0.00</span>
+        </div>
+        <div class="g-item" style="border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.06);">
+          <span class="g-lbl" style="color:var(--green);">Ganancia Neta Libre</span>
+          <span class="g-val" id="gt-ganancia" style="color:var(--green); font-size:16px;">$0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR & FILTROS -->
+    <div class="toolbar-container">
+      <!-- Fila 1: Búsqueda y Acciones Rápidas -->
+      <div class="toolbar-row-main">
+        <!-- Buscador en tiempo real -->
+        <div class="toolbar-search">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" placeholder="Buscar por Carta Porte, Origen, Destino..." oninput="handleSearch(this.value)">
+          <button id="search-clear-btn" class="search-clear" onclick="clearSearch()">✕</button>
+        </div>
+
+        <!-- Acciones de visualización y selección -->
+        <div class="toolbar-actions">
+          <button class="btn by bs" id="btn-open-report" onclick="openReportModal()" title="Generar informe con las cartas porte seleccionadas">
+            <span class="btn-icon">📑</span> Informe (<span id="btn-report-count">0</span>)
+          </button>
+          <button class="btn bg bs" onclick="toggleAllMonths()" id="btn-toggle-all">
+            <span class="btn-icon">⇕</span> Colapsar / Expandir
+          </button>
+
+          <!-- Selector de Columnas -->
+          <div class="dropdown">
+            <button class="btn bg bs" onclick="toggleDropdown('col-menu')">
+              <span class="btn-icon">👁️</span> Columnas ▼
+            </button>
+            <div id="col-menu" class="dropdown-menu" style="min-width: 190px;">
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('id', this.checked)"> ID
+              </label>
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('folio', this.checked)"> Carta Porte
+              </label>
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('fecha', this.checked)"> Fecha
+              </label>
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('origen', this.checked)"> Origen
+              </label>
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('destino', this.checked)"> Destino
+              </label>
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('total', this.checked)"> Total Factura
+              </label>
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('comision', this.checked)"> Comisión 8%
+              </label>
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('impuestos', this.checked)"> Impuestos 16%
+              </label>
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('neto', this.checked)"> Viaje Neto
+              </label>
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('pago', this.checked)"> Pago Chofer 17%
+              </label>
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('utilidad', this.checked)"> Utilidad Empresa
+              </label>
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('gastos', this.checked)"> Gastos
+              </label>
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('casetas', this.checked)"> Casetas
+              </label>
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('diesel', this.checked)"> Diesel
+              </label>
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('estchofer', this.checked)"> Estatus Chofer
+              </label>
+              <label style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; text-transform:none;">
+                <input type="checkbox" checked onchange="toggleCol('estviaje', this.checked)"> Estatus Viaje
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fila 2: Filtros Organizados -->
+      <div class="toolbar-row-filters">
+        <!-- Filtro Mes -->
+        <div class="filter-group">
+          <span class="filter-label">📅 Periodo:</span>
+          <select id="filter-month" class="filter-select" onchange="applyFilters()">
+            <option value="ALL">Todos los meses</option>
+          </select>
+        </div>
+
+        <!-- Filtro Chofer -->
+        <div class="filter-group">
+          <span class="filter-label">👨‍✈️ Chofer:</span>
+          <div class="segmented-control">
+            <button class="segment-btn active" data-filter="chofer" data-val="ALL" onclick="setSegment(this)">Todos</button>
+            <button class="segment-btn" data-filter="chofer" data-val="Pagado" onclick="setSegment(this)">✓ Pagados</button>
+            <button class="segment-btn" data-filter="chofer" data-val="No Pagado" onclick="setSegment(this)">⏳ Por Pagar</button>
+          </div>
+        </div>
+
+        <!-- Filtro Viaje -->
+        <div class="filter-group">
+          <span class="filter-label">🚚 Viaje:</span>
+          <div class="segmented-control">
+            <button class="segment-btn active" data-filter="viaje" data-val="ALL" onclick="setSegment(this)">Todos</button>
+            <button class="segment-btn" data-filter="viaje" data-val="Pagado" onclick="setSegment(this)">✓ Cobrado</button>
+            <button class="segment-btn" data-filter="viaje" data-val="No Pagado" onclick="setSegment(this)">⏳ Por Cobrar</button>
+          </div>
+        </div>
+
+        <!-- Botón Limpiar Filtros -->
+        <button class="btn-reset-filters" onclick="resetAllFilters()" title="Restablecer todos los filtros y búsqueda">
+          <span>✕</span> Limpiar Filtros
+        </button>
+      </div>
+    </div>
+
+    <!-- CONTENEDOR DE TABLAS POR MES -->
+    <div id="table-container">
+      <!-- Se inyectan dinámicamente con renderTable() -->
+    </div>
+
+  </main>
+
+  <!-- MODAL: CREAR / EDITAR VIAJE -->
+  <div class="modal-overlay" id="trip-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modal-trip-title">➕ Registrar Nuevo Viaje</h2>
+        <button class="modal-close" onclick="closeModal('trip-modal')">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <input type="hidden" id="m-edit-id">
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Carta Porte (Folio) *</label>
+            <input type="text" class="inp" id="m-folio" placeholder="Ej. 1234">
+          </div>
+
+          <div class="form-group">
+            <label>Fecha de Emisión *</label>
+            <input type="date" class="inp" id="m-fecha">
+          </div>
+
+          <div class="form-group">
+            <label>Origen *</label>
+            <input type="text" class="inp" id="m-origen" placeholder="Ciudad o Empresa remitente" oninput="updateModalCalcPreview()">
+          </div>
+
+          <div class="form-group">
+            <label>Destino *</label>
+            <input type="text" class="inp" id="m-destino" placeholder="Ciudad o Empresa destinataria">
+          </div>
+
+          <div class="form-group full">
+            <label>Total Factura ($ MXN) *</label>
+            <input type="number" step="0.01" class="inp" id="m-total" placeholder="0.00" oninput="updateModalCalcPreview()" style="font-size:16px; font-weight:700;">
+          </div>
+
+          <div class="form-group full">
+            <label>Descripción / Contenido Factura (Opcional)</label>
+            <input type="text" class="inp" id="m-descripcion" placeholder="Ej. TRANSPORTE DE MERCANCIA / FLETE (o se genera con Origen y Destino)">
+          </div>
+
+          <!-- Campos operativos adicionales al editar o crear -->
+          <div class="form-group">
+            <label>Gastos ($)</label>
+            <input type="number" step="0.01" class="inp" id="m-gastos" placeholder="0.00">
+          </div>
+
+          <div class="form-group">
+            <label>Casetas ($)</label>
+            <input type="number" step="0.01" class="inp" id="m-casetas" placeholder="0.00">
+          </div>
+
+          <div class="form-group">
+            <label>Diesel ($)</label>
+            <input type="number" step="0.01" class="inp" id="m-diesel" placeholder="0.00">
+          </div>
+
+          <div class="form-group">
+            <label>Estatus Chofer</label>
+            <select class="inp" id="m-estchofer">
+              <option value="No Pagado">⏳ No Pagado (Pendiente)</option>
+              <option value="Pagado">✓ Pagado</option>
+            </select>
+          </div>
+
+          <!-- Previsualización de Cálculos automáticos en vivo -->
+          <div class="calc-preview-card">
+            <div class="calc-preview-title">
+              <span>Desglose Calculado en Tiempo Real</span>
+              <span id="calc-preview-badge" style="color:var(--accent);">Fórmulas Oficiales</span>
+            </div>
+            <div class="calc-preview-grid">
+              <div class="calc-preview-item">
+                <span class="l">Comisión (8%)</span>
+                <span class="v" id="cp-com" style="color:var(--yellow);">$0.00</span>
+              </div>
+              <div class="calc-preview-item">
+                <span class="l">Impuestos (16%)</span>
+                <span class="v" id="cp-imp" style="color:var(--red);">$0.00</span>
+              </div>
+              <div class="calc-preview-item">
+                <span class="l">Viaje Neto</span>
+                <span class="v" id="cp-neto" style="color:var(--accent);">$0.00</span>
+              </div>
+              <div class="calc-preview-item">
+                <span class="l">Pago Chofer (17%)</span>
+                <span class="v" id="cp-pago" style="color:var(--green); font-size:16px;">$0.00</span>
+              </div>
+              <div class="calc-preview-item">
+                <span class="l">Utilidad Empresa</span>
+                <span class="v" id="cp-utilidad">$0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn bg" onclick="closeModal('trip-modal')">Cancelar</button>
+        <button class="btn bp" onclick="saveTrip()">
+          <span class="btn-icon">💾</span> Guardar Viaje
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: IMPORTACIÓN BATCH DE PDFS -->
+  <div class="modal-overlay" id="batch-pdf-modal">
+    <div class="modal-card modal-xl">
+      <div class="modal-header">
+        <h2>📄 Revisión de Facturas PDF Extraídas</h2>
+        <button class="modal-close" onclick="closeModal('batch-pdf-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-secondary); margin-bottom:16px; font-size:13.5px;">
+          Se leyeron correctamente los siguientes documentos. Revisa los datos detectados antes de agregarlos a la base de datos:
+        </p>
+
+        <div style="overflow-x:auto; max-height:450px; border:1px solid var(--border); border-radius:var(--radius-sm);">
+          <table style="min-width:750px;">
+            <thead>
+              <tr>
+                <th style="width:40px;"><input type="checkbox" id="batch-select-all" checked onchange="toggleBatchSelectAll(this.checked)"></th>
+                <th>Folio / Carta Porte</th>
+                <th>Fecha</th>
+                <th>Origen</th>
+                <th>Destino</th>
+                <th class="r">Total ($)</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="batch-table-body">
+              <!-- Filas de PDFs procesados -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn bg" onclick="closeModal('batch-pdf-modal')">Cancelar</button>
+        <button class="btn bx" onclick="importConfirmedBatchPDFs()">
+          <span class="btn-icon">✓</span> Importar Viajes Seleccionados (<span id="batch-count-btn">0</span>)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: RESPALDO Y RESTAURACIÓN DE BASE DE DATOS -->
+  <div class="modal-overlay" id="backup-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>💾 Respaldo y Gestión de Datos</h2>
+        <button class="modal-close" onclick="closeModal('backup-modal')">✕</button>
+      </div>
+      <div class="modal-body" style="display:flex; flex-direction:column; gap:20px;">
+        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:var(--radius-md); padding:16px;">
+          <h4 style="font-size:14px; font-weight:700; margin-bottom:6px;">📥 Exportar Copia de Seguridad</h4>
+          <p style="color:var(--text-secondary); font-size:12.5px; margin-bottom:14px;">
+            Descarga un archivo JSON con todos los viajes, gastos y verificaciones registradas para que nunca pierdas tu información.
+          </p>
+          <button class="btn bp" onclick="downloadBackupJSON()">
+            <span class="btn-icon">⬇</span> Descargar Respaldo JSON
+          </button>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:var(--radius-md); padding:16px;">
+          <h4 style="font-size:14px; font-weight:700; margin-bottom:6px;">📤 Restaurar desde Copia de Seguridad</h4>
+          <p style="color:var(--text-secondary); font-size:12.5px; margin-bottom:14px;">
+            Carga un archivo de respaldo previo. Puedes fusionar los viajes con los actuales o reemplazar la base de datos por completo.
+          </p>
+          <input type="file" id="backup-file-input" accept=".json" style="margin-bottom:12px; font-size:13px;">
+          <div style="display:flex; gap:10px;">
+            <button class="btn bx bs" onclick="restoreBackupJSON(false)">Fusionar Registros</button>
+            <button class="btn bd bs" onclick="restoreBackupJSON(true)">Reemplazar Todo</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn bg" onclick="closeModal('backup-modal')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONFIRMACIÓN DE BORRADO SEGURO -->
+  <div class="modal-overlay" id="clear-modal">
+    <div class="modal-card" style="max-width:480px;">
+      <div class="modal-header">
+        <h2 style="color:var(--red);">⚠️ ¿Borrar Toda la Base de Datos?</h2>
+        <button class="modal-close" onclick="closeModal('clear-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-secondary); font-size:14px; line-height:1.6;">
+          Esta acción eliminará de forma irreversible <strong>todos los viajes</strong> guardados en este navegador.
+        </p>
+        <p style="color:var(--muted); font-size:13px; margin-top:10px;">
+          Te sugerimos descargar primero una copia de seguridad usando la opción <strong>Respaldar</strong>.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn bg" onclick="closeModal('clear-modal')">Cancelar</button>
+        <button class="btn bd" onclick="confirmClearDatabase()">
+          <span class="btn-icon">🗑️</span> Sí, Borrar Todo Definitivamente
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARRA FLOTANTE DE SELECCION DE CARTAS PORTE -->
+  <div id="selection-bar" class="selection-floating-bar" style="display:none;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="font-size:16px;">☑️</span>
+      <span id="sel-bar-text" style="font-size:13px; font-weight:700; color:var(--text);">0 seleccionadas</span>
+      <span style="color:var(--muted);">|</span>
+      <span id="sel-bar-total" style="font-size:13px; font-weight:800; color:#38bdf8;">$0.00</span>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn bp bs" onclick="openReportModal()">
+        <span class="btn-icon">📑</span> Ver Informe
+      </button>
+      <button class="btn bg bs" onclick="clearSelectedTrips()">✕ Desmarcar</button>
+    </div>
+  </div>
+
+  <!-- MODAL: INFORME DE CARTAS PORTE Y FACTURAS SELECCIONADAS -->
+  <div class="modal-overlay" id="report-modal">
+    <div class="modal-card modal-xl" style="max-width: 980px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:22px;">📑</span>
+          <div>
+            <h2 style="font-size:18px; margin:0;">Informe de Facturación y Cartas Porte</h2>
+            <span style="font-size:12px; color:var(--muted);" id="report-modal-subtitle">0 cartas porte seleccionadas</span>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeModal('report-modal')">✕</button>
+      </div>
+
+      <div class="modal-body" style="padding: 24px;">
+        <!-- Contenido imprimible membretado -->
+        <div id="printable-report-area">
+          <div class="report-brand-header">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; border-bottom:2px solid var(--border); padding-bottom:16px;">
+              <div>
+                <h1 style="font-size:20px; font-weight:800; color:var(--text); letter-spacing:-0.4px;">TRANSPORTES HERMER</h1>
+                <p style="font-size:12px; color:var(--muted); margin-top:2px;">Control y Registro de Cartas Porte y Facturación</p>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:12px; font-weight:700; color:var(--text);" id="rep-date-now">FECHA: --</div>
+                <div style="font-size:11px; color:var(--muted);" id="rep-count-badge">0 DOCUMENTOS</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table class="report-table" style="min-width:100%; border-collapse:collapse;">
+              <thead>
+                <tr style="background:var(--surface); border-bottom:2px solid var(--border);">
+                  <th style="padding:10px 12px; text-align:left; font-size:11px; color:var(--muted); width:40px;">#</th>
+                  <th style="padding:10px 12px; text-align:left; font-size:11px; color:var(--muted); width:130px;">CARTA PORTE</th>
+                  <th style="padding:10px 12px; text-align:left; font-size:11px; color:var(--muted); width:110px;">FECHA</th>
+                  <th style="padding:10px 12px; text-align:left; font-size:11px; color:var(--muted);">DESCRIPCIÓN (ORIGEN / DESTINO / CONTENIDO)</th>
+                  <th style="padding:10px 12px; text-align:right; font-size:11px; color:var(--muted); width:150px;">TOTAL FACTURA</th>
+                </tr>
+              </thead>
+              <tbody id="report-table-body">
+                <!-- Filas inyectadas dinámicamente -->
+              </tbody>
+              <tfoot>
+                <tr style="border-top:2px solid var(--accent); background:rgba(79,110,247,0.06); font-weight:800;">
+                  <td colspan="4" style="padding:14px 12px; text-align:right; font-size:13px; color:var(--text);">TOTAL GENERAL DE FACTURAS SELECCIONADAS:</td>
+                  <td id="report-total-amount" style="padding:14px 12px; text-align:right; font-size:15px; color:var(--green); font-variant-numeric:tabular-nums;">$0.00</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-size:12px; color:var(--muted);">
+          Total: <strong id="report-footer-total" style="color:var(--text); font-size:14px;">$0.00</strong>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn bg" onclick="closeModal('report-modal')">Cerrar</button>
+          <button class="btn bg" onclick="copyReportText()">
+            <span class="btn-icon">📋</span> Copiar Resumen
+          </button>
+          <button class="btn bx" onclick="exportReportExcel()">
+            <span class="btn-icon">⬇</span> Exportar Excel
+          </button>
+          <button class="btn bp" onclick="printReport()">
+            <span class="btn-icon">🖨️</span> Imprimir / PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENEDOR DE TOASTS -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- LÓGICA JAVASCRIPT PRINCIPAL -->
+  <script>
+    // Inicializar configuración de PDF.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+    // Estado principal de registros
+    let records = JSON.parse(localStorage.getItem('chofer_db')) || [];
+    let batchExtractedTrips = [];
+    let hiddenCols = new Set();
+    let currentFilters = {
+      search: '',
+      month: 'ALL',
+      chofer: 'ALL',
+      viaje: 'ALL'
+    };
+    let selectedTripIds = new Set();
+
+    // --- FORMULAS Y UTILIDADES MATEMATICAS ---
+
+    function trunc2(n) {
+      if (!n || isNaN(n)) return 0;
+      const match = n.toString().match(/^-?\d+(?:\.\d{0,2})?/);
+      return match ? Number(match[0]) : 0;
+    }
+
+    function fmt(n) {
+      return new Intl.NumberFormat('es-MX', {
+        style: 'currency',
+        currency: 'MXN',
+        minimumFractionDigits: 2
+      }).format(n || 0);
+    }
+
+    function calc(r) {
+      const tot = parseFloat(r.total) || 0;
+      if (r.origen && r.origen.trim().toUpperCase() === 'MANIOBRA') {
+        return { tot, com: 0, imp: 0, neto: 0, pago: 0, utilidad: 0, isMan: true };
+      }
+      const com = trunc2(tot * 0.08);
+      const imp = trunc2(tot - (tot / 1.16));
+      const neto = trunc2(tot - com - imp);
+      const pago = trunc2(neto * 0.17);
+      const utilidad = trunc2(neto - pago);
+      return { tot, com, imp, neto, pago, utilidad, isMan: false };
+    }
+
+    function saveDB() {
+      localStorage.setItem('chofer_db', JSON.stringify(records));
+    }
+
+    function getMonthKey(fecha) {
+      if (!fecha) return 'Sin Fecha';
+      const d = new Date(fecha + 'T12:00:00');
+      if (isNaN(d.getTime())) return 'Sin Fecha';
+      const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      return `${months[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    // --- RENDERIZADO DE TABLAS Y ACORDEONES ---
+
+    function getTableHeaderHTML() {
+      return `
+        <thead>
+          <tr>
+            <th class="col-select"><input type="checkbox" class="chk-month-all" title="Seleccionar todos los de este mes" onchange="toggleSelectMonth(this)"></th>
+            <th class="col-id">#</th>
+            <th class="col-folio">Carta Porte</th>
+            <th class="col-fecha">Fecha</th>
+            <th class="col-origen">Origen</th>
+            <th class="col-destino">Destino</th>
+            <th class="col-total r">Total Factura</th>
+            <th class="col-comision r">Comisión 8%</th>
+            <th class="col-impuestos r">Impuestos 16%</th>
+            <th class="col-neto r">Viaje Neto</th>
+            <th class="col-pago r">Pago Chofer 17%</th>
+            <th class="col-utilidad r">Utilidad Empresa</th>
+            <th class="col-gastos">Gastos</th>
+            <th class="col-casetas">Casetas</th>
+            <th class="col-diesel">Diesel</th>
+            <th class="col-estchofer">Estatus Chofer</th>
+            <th class="col-estviaje">Estatus Viaje</th>
+            <th class="col-acciones">Acciones</th>
+          </tr>
+        </thead>
+      `;
+    }
+
+    function renderTable() {
+      const container = document.getElementById('table-container');
+
+      // Preservar posición de scroll antes de reconstruir
+      const savedWindowX = window.scrollX;
+      const savedWindowY = window.scrollY;
+      const savedMonthScrolls = {};
+      document.querySelectorAll('.month-card').forEach(mc => {
+        const mb = mc.querySelector('.month-body');
+        if (mb) savedMonthScrolls[mc.id] = { left: mb.scrollLeft, top: mb.scrollTop };
+      });
+
+      container.innerHTML = '';
+
+      // Ordenar por fecha ascendente (antiguos arriba) para la numeración natural
+      records.sort((a, b) => (a.fecha || '').localeCompare(b.fecha || ''));
+      records.forEach((r, idx) => { r.idNum = idx + 1; });
+
+      // Agrupar por mes
+      const allMonthKeys = new Set();
+      const groups = {};
+
+      records.forEach(r => {
+        const mk = getMonthKey(r.fecha);
+        allMonthKeys.add(mk);
+
+        // Aplicar filtros
+        if (currentFilters.month !== 'ALL' && mk !== currentFilters.month) return;
+        if (currentFilters.chofer !== 'ALL' && r.estChofer !== currentFilters.chofer) return;
+        if (currentFilters.viaje !== 'ALL' && r.estViaje !== currentFilters.viaje) return;
+        if (currentFilters.search) {
+          const q = currentFilters.search.toLowerCase();
+          const matchFolio = (r.folio || '').toLowerCase().includes(q);
+          const matchOrigen = (r.origen || '').toLowerCase().includes(q);
+          const matchDestino = (r.destino || '').toLowerCase().includes(q);
+          const matchId = ('#' + r.idNum).includes(q);
+          if (!matchFolio && !matchOrigen && !matchDestino && !matchId) return;
+        }
+
+        if (!groups[mk]) groups[mk] = [];
+        groups[mk].push(r);
+      });
+
+      // Actualizar opciones del select de meses
+      updateMonthSelectOptions(Array.from(allMonthKeys));
+
+      // Si no hay registros que coincidan
+      if (Object.keys(groups).length === 0) {
+        if (records.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">🚚</div>
+              <h3>No hay viajes registrados todavía</h3>
+              <p>Puedes subir las facturas en PDF con el botón superior, registrar viajes de forma manual o cargar datos de prueba para familiarizarte con el sistema.</p>
+              <div style="display:flex; justify-content:center; gap:12px;">
+                <button class="btn bx" onclick="document.getElementById('fileInput').click()">📄 Subir Factura PDF</button>
+                <button class="btn bp" onclick="openCreateModal()">➕ Registrar Manualmente</button>
+                <button class="btn bg" onclick="loadSampleData()">✨ Cargar Datos Demo</button>
+              </div>
+            </div>
+          `;
+        } else {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">🔍</div>
+              <h3>Ningún viaje coincide con los filtros</h3>
+              <p>Prueba limpiando el buscador o cambiando los selectores de mes y estatus.</p>
+              <button class="btn bg" onclick="resetAllFilters()">Restablecer Filtros</button>
+            </div>
+          `;
+        }
+        updateKPIs();
+        applyColumnVisibility();
+        return;
+      }
+
+      // Renderizar acordeón por cada mes
+      for (const [mk, groupRecords] of Object.entries(groups)) {
+        const mkId = mk.replace(/[\s\/]/g, '-');
+
+        // Sumatorias mensuales
+        let sumTot = 0, sumCom = 0, sumImp = 0, sumNeto = 0, sumPago = 0, sumUtilidad = 0;
+        let sumGastos = 0, sumCasetas = 0, sumDiesel = 0;
+        let sumCobrado = 0;
+
+        groupRecords.forEach(r => {
+          const c = calc(r);
+          sumTot += c.tot; sumCom += c.com; sumImp += c.imp;
+          sumNeto += c.neto; sumPago += c.pago; sumUtilidad += c.utilidad;
+          if (r.estViaje === 'Pagado') sumCobrado += c.tot;
+          sumGastos += parseFloat(r.gastos) || 0;
+          sumCasetas += parseFloat(r.casetas) || 0;
+          sumDiesel += parseFloat(r.diesel) || 0;
+        });
+
+        const gananciaMes = sumUtilidad - sumGastos - sumCasetas - sumDiesel;
+
+        const card = document.createElement('div');
+        card.className = 'month-card';
+        card.id = 'month-card-' + mkId;
+
+        // Cabecera del mes (acordeón interactivo)
+        const header = document.createElement('div');
+        header.className = 'month-header-bar';
+        header.onclick = (e) => {
+          if (!e.target.closest('button')) toggleMonth(mkId);
+        };
+
+        header.innerHTML = `
+          <div class="month-title-group">
+            <span class="month-chevron">▼</span>
+            <div class="month-title">
+              <span>📅</span> ${mk}
+              <span class="badge-counter">${groupRecords.length} viajes</span>
+            </div>
+          </div>
+          <div class="month-metrics">
+            <div class="metric-pill metric-pill-facturado">
+              <span class="lbl">Facturado:</span>
+              <span class="val">${fmt(sumTot)}</span>
+            </div>
+            <div class="metric-pill metric-pill-cobrado" style="border-color:rgba(6, 182, 212, 0.35);">
+              <span class="lbl">Cobrado:</span>
+              <span class="val" style="color:#38bdf8;">${fmt(sumCobrado)}</span>
+            </div>
+            <div class="metric-pill metric-pill-pago">
+              <span class="lbl">Pago Chofer:</span>
+              <span class="val" style="color:#fbbf24;">${fmt(sumPago)}</span>
+            </div>
+            <div class="metric-pill profit metric-pill-profit">
+              <span class="lbl">Ganancia Mes:</span>
+              <span class="val">${fmt(gananciaMes)}</span>
+            </div>
+          </div>
+        `;
+        card.appendChild(header);
+
+        // Cuerpo de la tabla
+        const body = document.createElement('div');
+        body.className = 'month-body';
+
+        const table = document.createElement('table');
+        table.id = 'table-' + mkId;
+        table.innerHTML = getTableHeaderHTML();
+
+        const tbody = document.createElement('tbody');
+
+        groupRecords.forEach(r => {
+          const c = calc(r);
+          const tr = document.createElement('tr');
+          if (r.estChofer === 'Pagado') tr.classList.add('row-paid-chofer');
+
+          tr.innerHTML = `
+            <td class="col-select">
+              <input type="checkbox" class="row-checkbox" data-id="${r.id}" ${selectedTripIds.has(r.id) ? 'checked' : ''} onchange="toggleSelectTrip('${r.id}', this.checked)">
+            </td>
+            <td class="col-id" style="font-weight:700; color:var(--muted)">#${r.idNum}</td>
+            <td class="col-folio">
+              <span class="badge-folio" onclick="copyToClipboard('${r.folio || ''}')" title="Clic para copiar folio">
+                ${r.folio || '—'}
+              </span>
+            </td>
+            <td class="col-fecha" style="color:var(--text-secondary); font-size:12px;">${r.fecha || '—'}</td>
+            <td class="col-origen" style="font-weight:600;">${r.origen || '—'}</td>
+            <td class="col-destino" style="font-weight:600;">${r.destino || '—'}</td>
+            <td class="col-total r" style="font-weight:700; color:var(--text);">${fmt(c.tot)}</td>
+            <td class="col-comision r" style="color:var(--yellow);">${c.isMan ? '—' : fmt(c.com)}</td>
+            <td class="col-impuestos r" style="color:#f87171;">${c.isMan ? '—' : fmt(c.imp)}</td>
+            <td class="col-neto r" style="color:#93c5fd; font-weight:700;">${c.isMan ? '—' : fmt(c.neto)}</td>
+            <td class="col-pago r" style="color:#34d399; font-weight:800; font-size:13px;">${c.isMan ? '—' : fmt(c.pago)}</td>
+            <td class="col-utilidad r" style="color:var(--text); font-weight:700;">${c.isMan ? '—' : fmt(c.utilidad)}</td>
+            
+            <td class="col-gastos">
+              <input type="number" step="0.01" class="inp-tbl" placeholder="$0.00" value="${r.gastos || ''}" onchange="updateTripField('${r.id}', 'gastos', this.value, this)">
+            </td>
+            
+            <td class="col-casetas">
+              <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
+                <input type="number" step="0.01" class="inp-tbl" placeholder="$0.00" value="${r.casetas || ''}" onchange="updateTripField('${r.id}', 'casetas', this.value, this)">
+                <button class="badge-verify ${r.verCasetas ? 'verify-yes' : 'verify-no'}" onclick="toggleBooleanField('${r.id}', 'verCasetas', this)">
+                  ${r.verCasetas ? '✓ Verificado' : '⏳ Sin verif.'}
+                </button>
+              </div>
+            </td>
+
+            <td class="col-diesel">
+              <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
+                <input type="number" step="0.01" class="inp-tbl" placeholder="$0.00" value="${r.diesel || ''}" onchange="updateTripField('${r.id}', 'diesel', this.value, this)">
+                <button class="badge-verify ${r.verDiesel ? 'verify-yes' : 'verify-no'}" onclick="toggleBooleanField('${r.id}', 'verDiesel', this)">
+                  ${r.verDiesel ? '✓ Verificado' : '⏳ Sin verif.'}
+                </button>
+              </div>
+            </td>
+
+            <td class="col-estchofer">
+              <button class="badge-status ${r.estChofer === 'Pagado' ? 'status-paid' : 'status-pending'}" onclick="toggleStatusField('${r.id}', 'estChofer', this)">
+                ${r.estChofer === 'Pagado' ? '✓ Pagado' : '⏳ Por Pagar'}
+              </button>
+            </td>
+
+            <td class="col-estviaje">
+              <button class="badge-status ${r.estViaje === 'Pagado' ? 'status-paid' : 'status-pending'}" onclick="toggleStatusField('${r.id}', 'estViaje', this)">
+                ${r.estViaje === 'Pagado' ? '✓ Cobrado' : '⏳ Por Cobrar'}
+              </button>
+            </td>
+
+            <td class="col-acciones">
+              <div style="display:flex; gap:6px; justify-content:center;">
+                <button class="btn bg bs" onclick="openEditModal('${r.id}')" title="Editar viaje">✏️</button>
+                <button class="btn bd bs" onclick="deleteTrip('${r.id}')" title="Eliminar viaje">🗑️</button>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        table.appendChild(tbody);
+
+        // Fila de totales mensuales
+        const tfoot = document.createElement('tfoot');
+        tfoot.innerHTML = `
+          <tr>
+            <td class="col-select"></td>
+            <td class="col-id"></td>
+            <td class="col-folio"></td>
+            <td class="col-fecha"></td>
+            <td class="col-origen"></td>
+            <td class="col-destino" style="text-align:right; font-weight:800; color:var(--text); font-size:12px;">SUBTOTALES:</td>
+            <td class="col-total r" style="color:var(--text);">${fmt(sumTot)}</td>
+            <td class="col-comision r" style="color:var(--yellow);">${fmt(sumCom)}</td>
+            <td class="col-impuestos r" style="color:#f87171;">${fmt(sumImp)}</td>
+            <td class="col-neto r" style="color:#93c5fd;">${fmt(sumNeto)}</td>
+            <td class="col-pago r" style="color:#34d399; font-size:13.5px;">${fmt(sumPago)}</td>
+            <td class="col-utilidad r">${fmt(sumUtilidad)}</td>
+            <td class="col-gastos" style="text-align:center;">${fmt(sumGastos)}</td>
+            <td class="col-casetas" style="text-align:center;">${fmt(sumCasetas)}</td>
+            <td class="col-diesel" style="text-align:center;">${fmt(sumDiesel)}</td>
+            <td class="col-estchofer"></td>
+            <td class="col-estviaje"></td>
+            <td class="col-acciones"></td>
+          </tr>
+        `;
+        table.appendChild(tfoot);
+
+        body.appendChild(table);
+        card.appendChild(body);
+        container.appendChild(card);
+      }
+
+      updateKPIs();
+      applyColumnVisibility();
+      updateSelectionUI();
+
+      // Restaurar posición exacta de desplazamiento
+      window.scrollTo(savedWindowX, savedWindowY);
+      document.querySelectorAll('.month-card').forEach(mc => {
+        const mb = mc.querySelector('.month-body');
+        if (mb && savedMonthScrolls[mc.id]) {
+          mb.scrollLeft = savedMonthScrolls[mc.id].left;
+          mb.scrollTop = savedMonthScrolls[mc.id].top;
+        }
+      });
+    }
+
+    function toggleMonth(mkId) {
+      const card = document.getElementById('month-card-' + mkId);
+      if (card) card.classList.toggle('collapsed');
+    }
+
+    let allCollapsed = false;
+    function toggleAllMonths() {
+      allCollapsed = !allCollapsed;
+      const cards = document.querySelectorAll('.month-card');
+      cards.forEach(c => {
+        if (allCollapsed) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+      });
+      document.getElementById('btn-toggle-all').textContent = allCollapsed ? '⇕ Expandir Todo' : '⇕ Colapsar Todo';
+    }
+
+    // --- KPI CARDS GLOBALES ---
+
+    function updateKPIs() {
+      let tot = 0, com = 0, imp = 0, neto = 0, pago = 0, utilidad = 0;
+      let pagoPagado = 0, pagoPend = 0;
+      let cobradoTot = 0, porCobrarTot = 0;
+      let cobradoCount = 0, porCobrarCount = 0;
+      let sumGastos = 0, sumCasetas = 0, sumDiesel = 0;
+      let verifTotal = 0, verifOk = 0;
+
+      records.forEach(r => {
+        const c = calc(r);
+        tot += c.tot;
+        com += c.com;
+        imp += c.imp;
+        neto += c.neto;
+        pago += c.pago;
+        utilidad += c.utilidad;
+
+        if (r.estChofer === 'Pagado') pagoPagado += c.pago;
+        else pagoPend += c.pago;
+
+        if (r.estViaje === 'Pagado') {
+          cobradoTot += c.tot;
+          cobradoCount++;
+        } else {
+          porCobrarTot += c.tot;
+          porCobrarCount++;
+        }
+
+        const g = parseFloat(r.gastos) || 0;
+        const cs = parseFloat(r.casetas) || 0;
+        const d = parseFloat(r.diesel) || 0;
+
+        sumGastos += g;
+        sumCasetas += cs;
+        sumDiesel += d;
+
+        if (cs > 0) { verifTotal++; if (r.verCasetas) verifOk++; }
+        if (d > 0) { verifTotal++; if (r.verDiesel) verifOk++; }
+      });
+
+      const gastosOperativos = sumGastos + sumCasetas + sumDiesel;
+      const gananciaLibre = utilidad - gastosOperativos;
+      const margenNeto = neto > 0 ? ((gananciaLibre / neto) * 100).toFixed(1) : 0;
+      const avgViaje = records.length > 0 ? tot / records.length : 0;
+
+      // Actualizar Tarjetas Principales
+      document.getElementById('kpi-total').textContent = fmt(tot);
+      document.getElementById('kpi-count').textContent = `${records.length} viajes registrados`;
+      document.getElementById('kpi-avg').textContent = `Prom: ${fmt(avgViaje)}`;
+
+      const pctCobrado = tot > 0 ? Math.min(100, Math.round((cobradoTot / tot) * 100)) : 0;
+      document.getElementById('kpi-cobrado').textContent = fmt(cobradoTot);
+      document.getElementById('kpi-cobrado-pagado').textContent = `✓ Cobrado: ${fmt(cobradoTot)} (${cobradoCount} v.)`;
+      document.getElementById('kpi-cobrado-pend').textContent = `⏳ Pend: ${fmt(porCobrarTot)} (${porCobrarCount} v.)`;
+      document.getElementById('kpi-cobrado-bar').style.width = pctCobrado + '%';
+
+      document.getElementById('kpi-ganancia').textContent = fmt(gananciaLibre);
+      document.getElementById('kpi-margen').textContent = `Margen: ${margenNeto}% sobre neto`;
+
+      document.getElementById('kpi-pago').textContent = fmt(pago);
+      document.getElementById('kpi-pago-pagado').textContent = `✓ Pagado: ${fmt(pagoPagado)}`;
+      document.getElementById('kpi-pago-pend').textContent = `⏳ Pend: ${fmt(pagoPend)}`;
+
+      const pctPago = pago > 0 ? Math.min(100, Math.round((pagoPagado / pago) * 100)) : 0;
+      document.getElementById('kpi-pago-bar').style.width = pctPago + '%';
+
+      document.getElementById('kpi-gastos').textContent = fmt(gastosOperativos);
+      document.getElementById('kpi-gastos-detail').textContent = `Gas: ${fmt(sumGastos)} | Cas: ${fmt(sumCasetas)} | Die: ${fmt(sumDiesel)}`;
+      document.getElementById('kpi-verif-count').textContent = `${verifOk}/${verifTotal} verif.`;
+
+      // Actualizar Totales Globales Acumulados (De Todos los Meses)
+      const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+      setVal('gt-comision', fmt(com));
+      setVal('gt-iva', fmt(imp));
+      setVal('gt-neto', fmt(neto));
+      setVal('gt-utilidad', fmt(utilidad));
+      setVal('gt-ganancia', fmt(gananciaLibre));
+      setVal('global-trips-badge', `${records.length} viajes acumulados`);
+    }
+
+    // --- ACCIONES INLINE & MODIFICACIONES DE DATOS ---
+
+    // Helper para actualizar totales y cabecera de un mes sin re-renderizar
+    function updateMonthHeaderMetrics(mk) {
+      if (!mk) return;
+      const mkId = mk.replace(/[\s\/]/g, '-');
+      const card = document.getElementById('month-card-' + mkId);
+      if (!card) return;
+
+      const monthRecords = records.filter(r => getMonthKey(r.fecha) === mk);
+      let sumTot = 0, sumPago = 0, sumUtilidad = 0, sumGastos = 0, sumCasetas = 0, sumDiesel = 0, sumCobrado = 0;
+
+      monthRecords.forEach(r => {
+        const c = calc(r);
+        sumTot += c.tot;
+        sumPago += c.pago;
+        sumUtilidad += c.utilidad;
+        if (r.estViaje === 'Pagado') sumCobrado += c.tot;
+        sumGastos += parseFloat(r.gastos) || 0;
+        sumCasetas += parseFloat(r.casetas) || 0;
+        sumDiesel += parseFloat(r.diesel) || 0;
+      });
+
+      const gananciaMes = sumUtilidad - sumGastos - sumCasetas - sumDiesel;
+
+      const pFac = card.querySelector('.metric-pill-facturado .val');
+      if (pFac) pFac.textContent = fmt(sumTot);
+
+      const pCob = card.querySelector('.metric-pill-cobrado .val');
+      if (pCob) pCob.textContent = fmt(sumCobrado);
+
+      const pPago = card.querySelector('.metric-pill-pago .val');
+      if (pPago) pPago.textContent = fmt(sumPago);
+
+      const pProfit = card.querySelector('.metric-pill-profit .val');
+      if (pProfit) pProfit.textContent = fmt(gananciaMes);
+
+      // Subtotales en tfoot
+      const tfoot = card.querySelector('tfoot');
+      if (tfoot) {
+        const tfG = tfoot.querySelector('.col-gastos');
+        if (tfG) tfG.textContent = fmt(sumGastos);
+        const tfC = tfoot.querySelector('.col-casetas');
+        if (tfC) tfC.textContent = fmt(sumCasetas);
+        const tfD = tfoot.querySelector('.col-diesel');
+        if (tfD) tfD.textContent = fmt(sumDiesel);
+        const tfP = tfoot.querySelector('.col-pago');
+        if (tfP) tfP.textContent = fmt(sumPago);
+      }
+    }
+
+    function updateTripField(id, field, val, inp) {
+      const r = records.find(x => x.id === id);
+      if (r) {
+        r[field] = parseFloat(val) || 0;
+        saveDB();
+        updateKPIs();
+        updateMonthHeaderMetrics(getMonthKey(r.fecha));
+        showToast('Guardado automático', 'ts');
+      }
+    }
+
+    function toggleBooleanField(id, field, btn) {
+      const r = records.find(x => x.id === id);
+      if (r) {
+        r[field] = !r[field];
+        saveDB();
+        if (btn) {
+          const isOk = !!r[field];
+          btn.className = `badge-verify ${isOk ? 'verify-yes' : 'verify-no'}`;
+          btn.innerHTML = isOk ? '✓ Verificado' : '⏳ Sin verif.';
+        }
+        updateKPIs();
+        showToast(`${field === 'verCasetas' ? 'Casetas' : 'Diesel'} actualizado`, 'ts');
+      }
+    }
+
+    function toggleStatusField(id, field, btn) {
+      const r = records.find(x => x.id === id);
+      if (r) {
+        r[field] = r[field] === 'Pagado' ? 'No Pagado' : 'Pagado';
+        saveDB();
+        if (btn) {
+          const isPaid = r[field] === 'Pagado';
+          btn.className = `badge-status ${isPaid ? 'status-paid' : 'status-pending'}`;
+          if (field === 'estChofer') {
+            btn.innerHTML = isPaid ? '✓ Pagado' : '⏳ Por Pagar';
+            const tr = btn.closest('tr');
+            if (tr) {
+              if (isPaid) tr.classList.add('row-paid-chofer');
+              else tr.classList.remove('row-paid-chofer');
+            }
+          } else if (field === 'estViaje') {
+            btn.innerHTML = isPaid ? '✓ Cobrado' : '⏳ Por Cobrar';
+          }
+        }
+        updateKPIs();
+        updateMonthHeaderMetrics(getMonthKey(r.fecha));
+        showToast(`Estatus actualizado a ${r[field]}`, 'ts');
+      }
+    }
+
+    function deleteTrip(id) {
+      const r = records.find(x => x.id === id);
+      if (!r) return;
+      if (!confirm(`¿Eliminar definitivamente el viaje con Folio ${r.folio || '(Sin Folio)'}?`)) return;
+
+      records = records.filter(x => x.id !== id);
+      selectedTripIds.delete(id);
+      saveDB();
+      renderTable();
+      showToast('Viaje eliminado', 'te');
+    }
+
+    // --- SELECCIÓN Y GENERACIÓN DE INFORMES ---
+
+    function toggleSelectTrip(id, isSelected) {
+      if (isSelected) selectedTripIds.add(id);
+      else selectedTripIds.delete(id);
+      updateSelectionUI();
+    }
+
+    function toggleSelectMonth(chk) {
+      const card = chk.closest('.month-card');
+      if (!card) return;
+      const rowCheckboxes = card.querySelectorAll('.row-checkbox');
+      rowCheckboxes.forEach(cb => {
+        cb.checked = chk.checked;
+        const id = cb.dataset.id;
+        if (id) {
+          if (chk.checked) selectedTripIds.add(id);
+          else selectedTripIds.delete(id);
+        }
+      });
+      updateSelectionUI();
+    }
+
+    function clearSelectedTrips() {
+      selectedTripIds.clear();
+      document.querySelectorAll('.row-checkbox, .chk-month-all').forEach(cb => cb.checked = false);
+      updateSelectionUI();
+    }
+
+    function updateSelectionUI() {
+      const count = selectedTripIds.size;
+      const btnCount = document.getElementById('btn-report-count');
+      if (btnCount) btnCount.textContent = count;
+
+      const bar = document.getElementById('selection-bar');
+      if (!bar) return;
+
+      if (count > 0) {
+        let total = 0;
+        records.forEach(r => {
+          if (selectedTripIds.has(r.id)) total += (parseFloat(r.total) || 0);
+        });
+        document.getElementById('sel-bar-text').textContent = `${count} seleccionada${count > 1 ? 's' : ''}`;
+        document.getElementById('sel-bar-total').textContent = fmt(total);
+        bar.style.display = 'flex';
+      } else {
+        bar.style.display = 'none';
+      }
+    }
+
+    function openReportModal() {
+      let tripsToReport = records.filter(r => selectedTripIds.has(r.id));
+      if (tripsToReport.length === 0) {
+        showToast('Selecciona primero las Cartas Porte que deseas incluir en el informe', 'tw');
+        return;
+      }
+
+      tripsToReport.sort((a, b) => (a.fecha || '').localeCompare(b.fecha || ''));
+
+      const tbody = document.getElementById('report-table-body');
+      tbody.innerHTML = '';
+      let sumTotal = 0;
+
+      tripsToReport.forEach((r, idx) => {
+        const c = calc(r);
+        sumTotal += c.tot;
+
+        let desc = r.descripcion ? r.descripcion.trim() : '';
+        if (!desc) {
+          if ((r.origen || '').toUpperCase() === 'MANIOBRA') {
+            desc = `SERVICIO DE MANIOBRA: ${r.destino || 'PATIO'}`;
+          } else {
+            desc = `TRANSPORTE DE CARGA: ${r.origen || 'ORIGEN'} ➔ ${r.destino || 'DESTINO'}`;
+          }
+        }
+
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = '1px solid rgba(255,255,255,0.08)';
+        tr.innerHTML = `
+          <td style="padding:10px 12px; color:var(--muted); font-weight:700;">${idx + 1}</td>
+          <td style="padding:10px 12px; font-weight:800;"><span class="badge-folio">${r.folio || '—'}</span></td>
+          <td style="padding:10px 12px; color:var(--text-secondary); font-size:12px;">${r.fecha || '—'}</td>
+          <td style="padding:10px 12px; font-weight:600; font-size:12.5px;">${desc}</td>
+          <td style="padding:10px 12px; text-align:right; font-weight:800; font-variant-numeric:tabular-nums; color:var(--text);">${fmt(c.tot)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('report-modal-subtitle').textContent = `${tripsToReport.length} Cartas Porte seleccionadas`;
+      document.getElementById('rep-count-badge').textContent = `${tripsToReport.length} DOCUMENTOS`;
+      document.getElementById('rep-date-now').textContent = `FECHA: ${new Date().toLocaleDateString('es-MX', { year:'numeric', month:'long', day:'numeric' }).toUpperCase()}`;
+      document.getElementById('report-total-amount').textContent = fmt(sumTotal);
+      document.getElementById('report-footer-total').textContent = fmt(sumTotal);
+
+      openModal('report-modal');
+    }
+
+    function printReport() {
+      window.print();
+    }
+
+    function copyReportText() {
+      let tripsToReport = records.filter(r => selectedTripIds.has(r.id));
+      if (!tripsToReport.length) return;
+      tripsToReport.sort((a, b) => (a.fecha || '').localeCompare(b.fecha || ''));
+
+      let sumTotal = 0;
+      let text = `========================================\n`;
+      text += `TRANSPORTES HERMER - INFORME DE FACTURAS\n`;
+      text += `Fecha: ${new Date().toLocaleDateString('es-MX')}\n`;
+      text += `Total de Facturas: ${tripsToReport.length}\n`;
+      text += `========================================\n\n`;
+
+      tripsToReport.forEach((r, i) => {
+        const c = calc(r);
+        sumTotal += c.tot;
+        let desc = r.descripcion || (r.origen && r.destino ? `${r.origen} ➔ ${r.destino}` : 'FLETE');
+        text += `${i + 1}. FOLIO: ${r.folio || '—'} | FECHA: ${r.fecha || '—'}\n`;
+        text += `   DESCRIPCIÓN: ${desc}\n`;
+        text += `   TOTAL: ${fmt(c.tot)}\n\n`;
+      });
+
+      text += `----------------------------------------\n`;
+      text += `TOTAL GENERAL: ${fmt(sumTotal)}\n`;
+      text += `========================================`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Informe copiado al portapapeles', 'ts');
+      });
+    }
+
+    function exportReportExcel() {
+      let tripsToReport = records.filter(r => selectedTripIds.has(r.id));
+      if (!tripsToReport.length) return;
+      tripsToReport.sort((a, b) => (a.fecha || '').localeCompare(b.fecha || ''));
+
+      const headers = ['#', 'Carta Porte / Folio', 'Fecha', 'Descripción (Origen / Destino y Contenido)', 'Total Factura'];
+      const numCell = val => ({ v: val || 0, t: 'n', z: '"$"#,##0.00' });
+
+      let sumTotal = 0;
+      const rows = tripsToReport.map((r, i) => {
+        const c = calc(r);
+        sumTotal += c.tot;
+        let desc = r.descripcion || (r.origen && r.destino ? `${r.origen} ➔ ${r.destino}` : 'TRANSPORTE');
+        return [i + 1, r.folio || '', r.fecha || '', desc, numCell(c.tot)];
+      });
+
+      const totalRow = ['TOTAL GENERAL', '', '', `${tripsToReport.length} FACTURAS`, numCell(sumTotal)];
+      const data = [headers, ...rows, totalRow];
+      const ws = XLSX.utils.aoa_to_sheet(data);
+
+      ws['!cols'] = [{ wch: 6 }, { wch: 18 }, { wch: 14 }, { wch: 45 }, { wch: 18 }];
+
+      const range = XLSX.utils.decode_range(ws['!ref']);
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cellRef = XLSX.utils.encode_cell({ r: 0, c: C });
+        if (ws[cellRef]) {
+          ws[cellRef].s = {
+            fill: { fgColor: { rgb: "1E2548" } },
+            font: { bold: true, color: { rgb: "FFFFFF" }, sz: 11 },
+            alignment: { horizontal: "center", vertical: "center" }
+          };
+        }
+      }
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Informe Facturacion");
+      XLSX.writeFile(wb, `Informe_Hermer_${new Date().toISOString().slice(0, 10)}.xlsx`);
+      showToast('Informe en Excel descargado', 'ts');
+    }
+
+    // --- MODAL DE CREACIÓN / EDICIÓN ---
+
+    function openCreateModal() {
+      document.getElementById('modal-trip-title').innerHTML = '➕ Registrar Nuevo Viaje';
+      document.getElementById('m-edit-id').value = '';
+      document.getElementById('m-folio').value = '';
+      document.getElementById('m-fecha').value = new Date().toISOString().slice(0, 10);
+      document.getElementById('m-origen').value = '';
+      document.getElementById('m-destino').value = '';
+      document.getElementById('m-descripcion').value = '';
+      document.getElementById('m-total').value = '';
+      document.getElementById('m-gastos').value = '';
+      document.getElementById('m-casetas').value = '';
+      document.getElementById('m-diesel').value = '';
+      document.getElementById('m-estchofer').value = 'No Pagado';
+
+      updateModalCalcPreview();
+      openModal('trip-modal');
+    }
+
+    function openEditModal(id) {
+      const r = records.find(x => x.id === id);
+      if (!r) return;
+
+      document.getElementById('modal-trip-title').innerHTML = '✏️ Editar Viaje #' + (r.idNum || '');
+      document.getElementById('m-edit-id').value = r.id;
+      document.getElementById('m-folio').value = r.folio || '';
+      document.getElementById('m-fecha').value = r.fecha || '';
+      document.getElementById('m-origen').value = r.origen || '';
+      document.getElementById('m-destino').value = r.destino || '';
+      document.getElementById('m-descripcion').value = r.descripcion || '';
+      document.getElementById('m-total').value = r.total || '';
+      document.getElementById('m-gastos').value = r.gastos || '';
+      document.getElementById('m-casetas').value = r.casetas || '';
+      document.getElementById('m-diesel').value = r.diesel || '';
+      document.getElementById('m-estchofer').value = r.estChofer || 'No Pagado';
+
+      updateModalCalcPreview();
+      openModal('trip-modal');
+    }
+
+    function updateModalCalcPreview() {
+      const tot = parseFloat(document.getElementById('m-total').value) || 0;
+      const origen = document.getElementById('m-origen').value.trim();
+      const mockRecord = { total: tot, origen: origen };
+      const c = calc(mockRecord);
+
+      document.getElementById('cp-com').textContent = c.isMan ? '— ($0.00)' : fmt(c.com);
+      document.getElementById('cp-imp').textContent = c.isMan ? '— ($0.00)' : fmt(c.imp);
+      document.getElementById('cp-neto').textContent = c.isMan ? '— ($0.00)' : fmt(c.neto);
+      document.getElementById('cp-pago').textContent = c.isMan ? '— ($0.00)' : fmt(c.pago);
+      document.getElementById('cp-utilidad').textContent = c.isMan ? '— ($0.00)' : fmt(c.utilidad);
+
+      if (c.isMan) {
+        document.getElementById('calc-preview-badge').textContent = '⚡ Maniobra (Sin Comisiones)';
+        document.getElementById('calc-preview-badge').style.color = 'var(--yellow)';
+      } else {
+        document.getElementById('calc-preview-badge').textContent = 'Fórmulas Oficiales (8%, 16%, 17%)';
+        document.getElementById('calc-preview-badge').style.color = 'var(--accent)';
+      }
+    }
+
+    function saveTrip() {
+      const editId = document.getElementById('m-edit-id').value;
+      const folio = document.getElementById('m-folio').value.trim();
+      const fecha = document.getElementById('m-fecha').value;
+      const origen = document.getElementById('m-origen').value.trim().toUpperCase();
+      const destino = document.getElementById('m-destino').value.trim().toUpperCase();
+      const descripcion = document.getElementById('m-descripcion').value.trim();
+      const total = parseFloat(document.getElementById('m-total').value) || 0;
+      const gastos = parseFloat(document.getElementById('m-gastos').value) || 0;
+      const casetas = parseFloat(document.getElementById('m-casetas').value) || 0;
+      const diesel = parseFloat(document.getElementById('m-diesel').value) || 0;
+      const estChofer = document.getElementById('m-estchofer').value;
+
+      if (!total) {
+        showToast('El importe Total de la factura es obligatorio', 'te');
+        return;
+      }
+
+      // Validar duplicado de folio solo si se crea o cambia
+      if (folio) {
+        const isDupe = records.some(r => r.folio === folio && r.id !== editId);
+        if (isDupe) {
+          showToast(`El Folio "${folio}" ya está registrado en otro viaje`, 'te');
+          return;
+        }
+      }
+
+      const descFinal = descripcion || (origen === 'MANIOBRA' ? `MANIOBRA: ${destino || 'PATIO'}` : `TRANSPORTE DE CARGA: ${origen} ➔ ${destino}`);
+
+      if (editId) {
+        // Actualizar registro existente
+        const r = records.find(x => x.id === editId);
+        if (r) {
+          r.folio = folio;
+          r.fecha = fecha;
+          r.origen = origen;
+          r.destino = destino;
+          r.descripcion = descFinal;
+          r.total = total;
+          r.gastos = gastos;
+          r.casetas = casetas;
+          r.diesel = diesel;
+          r.estChofer = estChofer;
+          showToast('Viaje actualizado correctamente', 'ts');
+        }
+      } else {
+        // Crear nuevo registro
+        records.push({
+          id: Date.now().toString(),
+          folio,
+          fecha,
+          origen,
+          destino,
+          descripcion: descFinal,
+          total,
+          gastos,
+          casetas,
+          verCasetas: false,
+          diesel,
+          verDiesel: false,
+          estChofer,
+          estViaje: 'No Pagado'
+        });
+        showToast('Nuevo viaje registrado con éxito', 'ts');
+      }
+
+      saveDB();
+      closeModal('trip-modal');
+      renderTable();
+    }
+
+    // --- PROCESAMIENTO INTELIGENTE DE PDFS (INDIVIDUAL Y BATCH) ---
+
+    async function extractDataFromPDF(file) {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+      let fullText = '';
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        fullText += content.items.map(item => item.str).join(' ') + '\n';
+      }
+
+      let folio = '', fecha = new Date().toISOString().slice(0, 10), total = 0, origen = '', destino = '', descripcion = '';
+      const text = fullText.replace(/\s+/g, ' ');
+
+      // Detección de Carta Porte o Folio
+      const fm = text.match(/Carta Porte Ingreso\s+(\d+)/i) ||
+                 text.match(/(?:Folio|Factura|Serie)\s*[:\-#]?\s*([A-Z0-9]{2,15})/i) ||
+                 text.match(/\bCP\s*[:\-#]?\s*([A-Z0-9]{2,12})/i);
+      if (fm) folio = fm[1];
+
+      // Detección de Total
+      const tm = text.match(/\bTOTAL\s*\$?\s*([\d,]+\.\d{2})/i) ||
+                 text.match(/\b(?:Total|Importe|Monto)\s*[:\$]?\s*([\d,]+\.\d{2})/i) ||
+                 text.match(/\$\s*([\d,]+\.\d{2})\s*(?:MXN|PESOS)?/i);
+      if (tm) total = parseFloat(tm[1].replace(/,/g, ''));
+
+      // Detección de Fecha de Emisión
+      const fem = text.match(/FECHA Y HORA DE EMISIÓN DE CFDI\s+(\d{4}-\d{2}-\d{2})/i) ||
+                  text.match(/FECHA DE EMISIÓN\s*[:\-]?\s*(\d{4}-\d{2}-\d{2})/i) ||
+                  text.match(/(\d{4}[-/]\d{2}[-/]\d{2}|\d{2}[-/]\d{2}[-/]\d{4})/);
+      if (fem) {
+        let f = fem[1].replace(/\//g, '-');
+        if (f.split('-')[2] && f.split('-')[2].length === 4) {
+          const p = f.split('-');
+          f = `${p[2]}-${p[1]}-${p[0]}`;
+        }
+        fecha = f;
+      }
+
+      // Detección de Origen y Destino
+      const om = text.match(/Origen.*?Nombre Remitente o Destinatario\s+(.*?)\s+Fecha Hora/i);
+      if (om) origen = om[1].trim();
+
+      const dm = text.match(/Destino.*?Nombre Remitente o Destinatario\s+(.*?)\s+Fecha Hora/i);
+      if (dm) destino = dm[1].trim();
+
+      if (!origen && text.match(/\bMANIOBRA\b/i)) {
+        origen = 'MANIOBRA';
+        destino = '-';
+      }
+
+      // Detección de concepto / descripción de la factura
+      const cm = text.match(/(?:Concepto|Descripción|Mercancía|Producto|Servicio)\s*[:\-]?\s*(.*?)(?=\s+(?:Clave|Unidad|Cantidad|Valor|Importe|Subtotal|Impuestos|\$|\bIVA\b))/i);
+      if (cm) {
+        descripcion = cm[1].trim();
+      }
+
+      return {
+        fileName: file.name,
+        folio,
+        fecha,
+        origen: origen ? origen.toUpperCase() : '',
+        destino: destino ? destino.toUpperCase() : '',
+        descripcion: descripcion || '',
+        total: total || 0
+      };
+    }
+
+    async function handlePDFSelection(files) {
+      if (!files || !files.length) return;
+
+      if (files.length === 1) {
+        // Solo un PDF: extracción directa y apertura de modal
+        showToast('Leyendo archivo PDF...', 'ti');
+        try {
+          const data = await extractDataFromPDF(files[0]);
+          if (data.folio && records.some(r => r.folio === data.folio)) {
+            showToast(`Atención: El Folio ${data.folio} ya existe en la base de datos`, 'tw');
+          }
+          openCreateModal();
+          document.getElementById('m-folio').value = data.folio;
+          document.getElementById('m-fecha').value = data.fecha;
+          document.getElementById('m-origen').value = data.origen;
+          document.getElementById('m-destino').value = data.destino;
+          document.getElementById('m-total').value = data.total || '';
+          updateModalCalcPreview();
+          showToast('Datos extraídos del PDF', 'ts');
+        } catch (err) {
+          console.error(err);
+          showToast('No se pudo extraer automáticamente el PDF', 'te');
+        }
+        document.getElementById('fileInput').value = '';
+      } else {
+        // Múltiples PDFs: Modo Batch con tabla de confirmación
+        showToast(`Procesando ${files.length} facturas PDF...`, 'ti');
+        batchExtractedTrips = [];
+
+        try {
+          for (let i = 0; i < files.length; i++) {
+            const data = await extractDataFromPDF(files[i]);
+            const isDupe = data.folio ? records.some(r => r.folio === data.folio) : false;
+            data.isDupe = isDupe;
+            data.selected = !isDupe;
+            batchExtractedTrips.push(data);
+          }
+
+          renderBatchModalTable();
+          openModal('batch-pdf-modal');
+        } catch (err) {
+          console.error(err);
+          showToast('Error procesando el lote de PDFs', 'te');
+        }
+        document.getElementById('fileInput').value = '';
+      }
+    }
+
+    function renderBatchModalTable() {
+      const tbody = document.getElementById('batch-table-body');
+      tbody.innerHTML = '';
+      let selectedCount = 0;
+
+      batchExtractedTrips.forEach((t, index) => {
+        if (t.selected) selectedCount++;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><input type="checkbox" ${t.selected ? 'checked' : ''} onchange="toggleBatchItem(${index}, this.checked)"></td>
+          <td style="font-weight:700;"><span class="badge-folio">${t.folio || 'Sin Folio'}</span></td>
+          <td>${t.fecha}</td>
+          <td>${t.origen || '—'}</td>
+          <td>${t.destino || '—'}</td>
+          <td class="r" style="font-weight:700;">${fmt(t.total)}</td>
+          <td>
+            ${t.isDupe ? 
+              '<span style="color:var(--yellow); font-size:11px; font-weight:700;">⚠️ Ya existe</span>' : 
+              '<span style="color:var(--green); font-size:11px; font-weight:700;">✓ Listo</span>'}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('batch-count-btn').textContent = selectedCount;
+    }
+
+    function toggleBatchItem(index, isChecked) {
+      batchExtractedTrips[index].selected = isChecked;
+      const count = batchExtractedTrips.filter(t => t.selected).length;
+      document.getElementById('batch-count-btn').textContent = count;
+    }
+
+    function toggleBatchSelectAll(isChecked) {
+      batchExtractedTrips.forEach(t => t.selected = isChecked);
+      renderBatchModalTable();
+    }
+
+    function importConfirmedBatchPDFs() {
+      const selected = batchExtractedTrips.filter(t => t.selected);
+      if (selected.length === 0) {
+        showToast('No seleccionaste ningún viaje para importar', 'tw');
+        return;
+      }
+
+      selected.forEach(t => {
+        records.push({
+          id: (Date.now() + Math.random()).toString(),
+          folio: t.folio,
+          fecha: t.fecha,
+          origen: t.origen,
+          destino: t.destino,
+          total: t.total,
+          gastos: 0,
+          casetas: 0,
+          verCasetas: false,
+          diesel: 0,
+          verDiesel: false,
+          estChofer: 'No Pagado',
+          estViaje: 'No Pagado'
+        });
+      });
+
+      saveDB();
+      closeModal('batch-pdf-modal');
+      renderTable();
+      showToast(`¡Se importaron ${selected.length} viajes exitosamente!`, 'ts');
+    }
+
+    // --- ARRASTRAR Y SOLTAR (DRAG & DROP GLOBAL) ---
+
+    window.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      document.getElementById('drop-overlay').classList.add('drag-active');
+    });
+
+    window.addEventListener('dragleave', (e) => {
+      if (e.relatedTarget === null) {
+        document.getElementById('drop-overlay').classList.remove('drag-active');
+      }
+    });
+
+    window.addEventListener('drop', (e) => {
+      e.preventDefault();
+      document.getElementById('drop-overlay').classList.remove('drag-active');
+      if (e.dataTransfer && e.dataTransfer.files.length > 0) {
+        handlePDFSelection(e.dataTransfer.files);
+      }
+    });
+
+    // --- FILTROS Y BÚSQUEDA ---
+
+    function handleSearch(val) {
+      currentFilters.search = val.trim();
+      document.getElementById('search-clear-btn').style.display = currentFilters.search ? 'block' : 'none';
+      renderTable();
+    }
+
+    function clearSearch() {
+      document.getElementById('search-input').value = '';
+      currentFilters.search = '';
+      document.getElementById('search-clear-btn').style.display = 'none';
+      renderTable();
+    }
+
+    function setSegment(btn) {
+      const group = btn.closest('.segmented-control');
+      group.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filterType = btn.dataset.filter;
+      currentFilters[filterType] = btn.dataset.val;
+      renderTable();
+    }
+
+    function updateMonthSelectOptions(monthKeys) {
+      const select = document.getElementById('filter-month');
+      const curVal = select.value;
+      select.innerHTML = '<option value="ALL">📅 Todos los meses</option>';
+
+      monthKeys.sort((a, b) => b.localeCompare(a));
+      monthKeys.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m;
+        if (m === curVal) opt.selected = true;
+        select.appendChild(opt);
+      });
+    }
+
+    function applyFilters() {
+      currentFilters.month = document.getElementById('filter-month').value;
+      renderTable();
+    }
+
+    function resetAllFilters() {
+      currentFilters = { search: '', month: 'ALL', chofer: 'ALL', viaje: 'ALL' };
+      document.getElementById('search-input').value = '';
+      document.getElementById('search-clear-btn').style.display = 'none';
+      document.getElementById('filter-month').value = 'ALL';
+      document.querySelectorAll('.segment-btn').forEach(b => {
+        if (b.dataset.val === 'ALL') b.classList.add('active');
+        else b.classList.remove('active');
+      });
+      renderTable();
+    }
+
+    // --- VISIBILIDAD DE COLUMNAS ---
+
+    function toggleCol(colName, isVisible) {
+      const styleId = 'col-hide-style-' + colName;
+      let styleEl = document.getElementById(styleId);
+
+      if (!isVisible) {
+        hiddenCols.add(colName);
+        if (!styleEl) {
+          styleEl = document.createElement('style');
+          styleEl.id = styleId;
+          styleEl.textContent = `.col-${colName} { display: none !important; }`;
+          document.head.appendChild(styleEl);
+        }
+      } else {
+        hiddenCols.delete(colName);
+        if (styleEl) styleEl.remove();
+      }
+    }
+
+    function applyColumnVisibility() {
+      hiddenCols.forEach(col => {
+        toggleCol(col, false);
+      });
+    }
+
+    // --- EXPORTACIÓN EXCEL DE ALTA CALIDAD ---
+
+    function exportExcel() {
+      if (records.length === 0) {
+        showToast('No hay viajes registrados para exportar', 'tw');
+        return;
+      }
+
+      const headers = [
+        'ID', 'Carta Porte', 'Fecha', 'Origen', 'Destino',
+        'Total Factura', 'Comisión 8%', 'Impuestos 16%', 'Viaje Neto',
+        'Pago Chofer 17%', 'Utilidad Empresa', 'Gastos', 'Casetas',
+        'Casetas Verif.', 'Diesel', 'Diesel Verif.', 'Estatus Chofer',
+        'Estatus Viaje', 'Ganancia Neta Viaje'
+      ];
+
+      const numCell = val => ({ v: val || 0, t: 'n', z: '"$"#,##0.00' });
+
+      let sumTotal = 0, sumNeto = 0, sumPago = 0, sumGastos = 0, sumGanancia = 0;
+
+      const rows = records.map((r, i) => {
+        const c = calc(r);
+        const g = parseFloat(r.gastos) || 0;
+        const cs = parseFloat(r.casetas) || 0;
+        const d = parseFloat(r.diesel) || 0;
+        const gan = c.utilidad - g - cs - d;
+
+        sumTotal += c.tot;
+        sumNeto += c.neto;
+        sumPago += c.pago;
+        sumGastos += (g + cs + d);
+        sumGanancia += gan;
+
+        return [
+          i + 1,
+          r.folio || '',
+          r.fecha || '',
+          r.origen || '',
+          r.destino || '',
+          numCell(c.tot),
+          numCell(c.com),
+          numCell(c.imp),
+          numCell(c.neto),
+          numCell(c.pago),
+          numCell(c.utilidad),
+          numCell(g),
+          numCell(cs),
+          r.verCasetas ? 'SÍ' : 'NO',
+          numCell(d),
+          r.verDiesel ? 'SÍ' : 'NO',
+          r.estChofer || 'No Pagado',
+          r.estViaje || 'No Pagado',
+          numCell(gan)
+        ];
+      });
+
+      // Fila de totales
+      const totalRow = [
+        'TOTALES', '', '', '', '',
+        numCell(sumTotal), '', '', numCell(sumNeto),
+        numCell(sumPago), '', numCell(sumGastos), '',
+        '', '', '', '', '', numCell(sumGanancia)
+      ];
+
+      const data = [headers, ...rows, totalRow];
+      const ws = XLSX.utils.aoa_to_sheet(data);
+
+      ws['!cols'] = [
+        { wch: 6 }, { wch: 14 }, { wch: 13 }, { wch: 26 }, { wch: 26 },
+        { wch: 16 }, { wch: 14 }, { wch: 15 }, { wch: 15 },
+        { wch: 16 }, { wch: 16 }, { wch: 12 }, { wch: 12 },
+        { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 15 },
+        { wch: 15 }, { wch: 18 }
+      ];
+
+      // Estilizar encabezado con xlsx-js-style
+      const range = XLSX.utils.decode_range(ws['!ref']);
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cellRef = XLSX.utils.encode_cell({ r: 0, c: C });
+        if (ws[cellRef]) {
+          ws[cellRef].s = {
+            fill: { fgColor: { rgb: "1E2548" } },
+            font: { bold: true, color: { rgb: "FFFFFF" }, sz: 11 },
+            alignment: { horizontal: "center", vertical: "center" }
+          };
+        }
+      }
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Control Choferes");
+      XLSX.writeFile(wb, `Reporte_Hermer_${new Date().toISOString().slice(0, 10)}.xlsx`);
+      showToast('Reporte Excel generado con éxito', 'ts');
+    }
+
+    // --- RESPALDO Y GESTIÓN DE BASE DE DATOS ---
+
+    function openBackupModal() {
+      openModal('backup-modal');
+    }
+
+    function downloadBackupJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
+      const a = document.createElement('a');
+      a.href = dataStr;
+      a.download = `Hermer_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast('Respaldo JSON descargado', 'ts');
+    }
+
+    function restoreBackupJSON(replaceEverything) {
+      const fileInput = document.getElementById('backup-file-input');
+      if (!fileInput.files.length) {
+        showToast('Selecciona un archivo .json de respaldo primero', 'tw');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (!Array.isArray(imported)) {
+            showToast('El archivo de respaldo no es válido', 'te');
+            return;
+          }
+
+          if (replaceEverything) {
+            records = imported;
+            showToast(`Base de datos restaurada con ${records.length} viajes`, 'ts');
+          } else {
+            let addedCount = 0;
+            imported.forEach(item => {
+              if (!records.some(r => r.folio && r.folio === item.folio)) {
+                records.push(item);
+                addedCount++;
+              }
+            });
+            showToast(`Se fusionaron ${addedCount} viajes nuevos`, 'ts');
+          }
+
+          saveDB();
+          closeModal('backup-modal');
+          renderTable();
+        } catch (err) {
+          console.error(err);
+          showToast('Error al procesar el archivo JSON', 'te');
+        }
+      };
+      reader.readAsText(fileInput.files[0]);
+    }
+
+    function openClearConfirmModal() {
+      closeDropdown('settings-menu');
+      openModal('clear-modal');
+    }
+
+    function confirmClearDatabase() {
+      records = [];
+      localStorage.removeItem('chofer_db');
+      closeModal('clear-modal');
+      renderTable();
+      showToast('Base de datos borrada por completo', 'te');
+    }
+
+    function loadSampleData() {
+      closeDropdown('settings-menu');
+      if (records.length > 0 && !confirm('¿Deseas agregar 4 viajes de demostración a tu base actual?')) return;
+
+      const now = new Date();
+      const thisMonth = now.toISOString().slice(0, 7);
+      const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString().slice(0, 7);
+
+      const samples = [
+        {
+          id: 'sample_1',
+          folio: 'CP-4821',
+          fecha: `${thisMonth}-04`,
+          origen: 'MONTERREY, NL',
+          destino: 'GUADALAJARA, JAL',
+          total: 42500.00,
+          gastos: 600.00,
+          casetas: 2850.00,
+          verCasetas: true,
+          diesel: 6400.00,
+          verDiesel: true,
+          estChofer: 'Pagado',
+          estViaje: 'Pagado'
+        },
+        {
+          id: 'sample_2',
+          folio: 'CP-4822',
+          fecha: `${thisMonth}-08`,
+          origen: 'SALTILLO, COAH',
+          destino: 'SAN LUIS POTOSI, SLP',
+          total: 28900.00,
+          gastos: 350.00,
+          casetas: 1600.00,
+          verCasetas: true,
+          diesel: 3800.00,
+          verDiesel: false,
+          estChofer: 'No Pagado',
+          estViaje: 'Pagado'
+        },
+        {
+          id: 'sample_3',
+          folio: 'CP-4823',
+          fecha: `${thisMonth}-12`,
+          origen: 'MANIOBRA',
+          destino: 'PATIO HERMER',
+          total: 4500.00,
+          gastos: 0,
+          casetas: 0,
+          verCasetas: false,
+          diesel: 400.00,
+          verDiesel: true,
+          estChofer: 'Pagado',
+          estViaje: 'Pagado'
+        },
+        {
+          id: 'sample_4',
+          folio: 'CP-4795',
+          fecha: `${prevMonth}-22`,
+          origen: 'QUERETARO, QRO',
+          destino: 'TOLUCA, MEX',
+          total: 34100.00,
+          gastos: 450.00,
+          casetas: 2100.00,
+          verCasetas: true,
+          diesel: 4900.00,
+          verDiesel: true,
+          estChofer: 'Pagado',
+          estViaje: 'Pagado'
+        }
+      ];
+
+      samples.forEach(s => {
+        if (!records.some(r => r.folio === s.folio)) records.push(s);
+      });
+
+      saveDB();
+      renderTable();
+      showToast('Viajes de prueba cargados correctamente', 'ts');
+    }
+
+    // --- MANEJO DE MODALES & DROPDOWNS ---
+
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('open');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('open');
+    }
+
+    function toggleDropdown(id) {
+      const el = document.getElementById(id);
+      const isShown = el.classList.contains('show');
+      closeAllDropdowns();
+      if (!isShown) el.classList.add('show');
+    }
+
+    function closeDropdown(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    function closeAllDropdowns() {
+      document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.dropdown')) {
+        closeAllDropdowns();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+        closeAllDropdowns();
+      }
+    });
+
+    // --- TOAST NOTIFICATIONS ---
+
+    function showToast(msg, type = 'ts') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+
+      const iconMap = {
+        ts: '✓',
+        te: '✕',
+        ti: 'ℹ',
+        tw: '⚠️'
+      };
+
+      toast.innerHTML = `
+        <span style="font-size:16px;">${iconMap[type] || '•'}</span>
+        <span>${msg}</span>
+      `;
+
+      container.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 10);
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    function copyToClipboard(text) {
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`Folio "${text}" copiado al portapapeles`, 'ti');
+      });
+    }
+
+    // Inicializar aplicación
+    renderTable();
+  </script>
+</body>
+
+</html>
